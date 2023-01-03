@@ -13,7 +13,7 @@ interface ReminderDao {
     fun getReminderList(): LiveData<List<ReminderDbModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertReminder(reminder: ReminderDbModel)
+    suspend fun addReminder(reminder: ReminderDbModel)
 
     @Query("SELECT * FROM reminders WHERE id=:reminderId LIMIT 1")
     suspend fun getReminder(reminderId: Int): ReminderDbModel

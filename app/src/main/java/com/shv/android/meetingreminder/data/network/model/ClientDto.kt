@@ -8,6 +8,10 @@ data class ClientDto(
     @Expose
     val clientNameDto: ClientNameDto,
 
+    @SerializedName("id")
+    @Expose
+    val id: IdDto,
+
     @SerializedName("email")
     @Expose
     val email: String,
