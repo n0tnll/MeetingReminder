@@ -10,5 +10,9 @@ interface ReminderRepository {
 
     fun addReminder(reminderItem: Reminder)
 
+    fun editReminder(reminderItem: Reminder)
+
+    fun deleteReminder(reminderItem: Reminder)
+
     fun chooseClient(clientId: Int): Client
 }

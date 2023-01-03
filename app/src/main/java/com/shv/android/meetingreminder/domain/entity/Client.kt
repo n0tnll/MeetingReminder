@@ -1,7 +1,8 @@
 package com.shv.android.meetingreminder.domain.entity
 
 data class Client(
-    val title: String,
+    val clientId: Int,
+    val titleName: String,
     val firstName: String,
     val lastName: String,
     val email: String,
