@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">MeetingReminder</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_reminder_button_description">Add reminder button</string>
+    <string name="client_photo_description">Аватарка клиента</string>
+    <string name="image_no_reminder_description">Список напоминаний пуст</string>
+    <string name="no_reminders_description">Нет напоминаний</string>
+    <string name="reminder_title">Название*</string>
+    <string name="reminder_client">Клиент*</string>
+    <string name="reminder_client_email">Email*</string>
+    <string name="reminder_date">Дата встречи*</string>
+    <string name="reminder_time">Время</string>
+    <string name="button_save">Сохранить</string>
 </resources>

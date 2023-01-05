@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/reminderListFragment">
+
+    <fragment
+        android:id="@+id/clientListFragment"
+        android:name="com.shv.android.meetingreminder.presentation.fragments.ClientListFragment"
+        android:label="ClientListFragment"
+        tools:layout="@layout/fragment_client_list"/>
+    <fragment
+        android:id="@+id/addReminderFragment"
+        android:name="com.shv.android.meetingreminder.presentation.fragments.AddReminderFragment"
+        android:label="fragment_add_reminder"
+        tools:layout="@layout/fragment_add_reminder" >
+        <action
+            android:id="@+id/action_addReminderFragment_to_clientListFragment"
+            app:destination="@id/clientListFragment"
+            app:popUpTo="@id/addReminderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reminderListFragment"
+        android:name="com.shv.android.meetingreminder.presentation.fragments.ReminderListFragment"
+        android:label="ReminderListFragment"
+        tools:layout="@layout/fragment_reminder_list">
+        <action
+            android:id="@+id/action_reminderListFragment_to_addReminderFragment"
+            app:destination="@id/addReminderFragment" />
+    </fragment>
+</navigation>
