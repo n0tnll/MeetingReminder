@@ -13,7 +13,7 @@
         android:padding="16dp">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvReminderTitle"
+            android:id="@+id/tv_reminder_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -22,26 +22,26 @@
             tools:text="Reminder Title" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvReminderDate"
+            android:id="@+id/tv_reminder_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvReminderTitle"
+            app:layout_constraintTop_toBottomOf="@id/tv_reminder_title"
             tools:text="22.01.2022" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvReminderTime"
+            android:id="@+id/tv_reminder_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toEndOf="@id/tvReminderDate"
-            app:layout_constraintTop_toBottomOf="@id/tvReminderTitle"
+            app:layout_constraintStart_toEndOf="@id/tv_reminder_date"
+            app:layout_constraintTop_toBottomOf="@id/tv_reminder_title"
             tools:text="15:00" />
 
         <ImageView
-            android:id="@+id/ivClientPhoto"
+            android:id="@+id/iv_client_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -49,36 +49,34 @@
             android:contentDescription="@string/client_photo_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvReminderDate"
+            app:layout_constraintTop_toBottomOf="@+id/tv_reminder_date"
             app:srcCompat="@drawable/ic_client_no_photo" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvClientName"
+            android:id="@+id/tv_client_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/tvClientEmail"
+            app:layout_constraintBottom_toTopOf="@+id/tv_client_email"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivClientPhoto"
-            app:layout_constraintTop_toBottomOf="@+id/tvReminderDate"
+            app:layout_constraintStart_toEndOf="@+id/iv_client_photo"
+            app:layout_constraintTop_toBottomOf="@+id/tv_reminder_date"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Client full name" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvClientEmail"
+            android:id="@+id/tv_client_email"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivClientPhoto"
-            app:layout_constraintTop_toBottomOf="@+id/tvClientName"
+            app:layout_constraintStart_toEndOf="@+id/iv_client_photo"
+            app:layout_constraintTop_toBottomOf="@+id/tv_client_name"
             tools:text="Client email" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </com.google.android.material.card.MaterialCardView>

@@ -12,4 +12,5 @@
     <string name="reminder_date">Дата встречи*</string>
     <string name="reminder_time">Время</string>
     <string name="button_save">Сохранить</string>
+    <string name="full_name_template">%s %s %s</string>
 </resources>

@@ -5,5 +5,5 @@ data class Reminder(
     val title: String,
     val date: String,
     val time: String?,
-    val client: Client
+    val client: Client?
 )
