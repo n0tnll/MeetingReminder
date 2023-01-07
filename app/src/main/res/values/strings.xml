@@ -13,4 +13,5 @@
     <string name="reminder_time">Время</string>
     <string name="button_save">Сохранить</string>
     <string name="full_name_template">%s %s %s</string>
+    <string name="empty_field_error">Поле не должно быть пустым</string>
 </resources>

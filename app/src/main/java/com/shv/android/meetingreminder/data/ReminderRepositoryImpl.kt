@@ -12,14 +12,12 @@ import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
 
 class ReminderRepositoryImpl(
-    private val application: Application
+    application: Application
 ) : ReminderRepository {
 
     private val reminderDao = AppDatabase.newInstance(application).reminderDao()
     private val apiService = ApiFactory.apiService
     private val mapper = ReminderMapper()
-
-    val listClients = mutableListOf<Client>()
 
     override fun getReminderList(): LiveData<List<Reminder>> {
         return Transformations.map(reminderDao.getReminderList()) {
@@ -50,12 +48,16 @@ class ReminderRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun loadClientsList() {
+    override suspend fun loadClientsList(): List<Client> {
+        val result = mutableListOf<Client>()
         try {
             val clients = apiService.getContacts()
-            listClients.addAll(mapper.mapListDtoToListEntity(clients))
+            val clientsListEntity = mapper.mapListDtoToListEntity(clients)
+            Log.d("ReminderRepositoryImpl", "val clientsListEntity: $clientsListEntity")
+            result.addAll(clientsListEntity)
         } catch (e: Exception) {
             Log.e("ReminderRepositoryImpl", "Что-то с загрузкой ${e.message}")
         }
+        return result
     }
 }

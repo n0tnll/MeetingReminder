@@ -9,8 +9,8 @@ interface ApiService {
     @GET("api/")
     suspend fun getContacts(
         @Query(QUERY_PARAM_INCLUDE) include: String = PARAM_INCLUDES,
-        @Query(QUERY_PARAM_NOINFO) noinfo: String = "noinfo",
-        @Query(QUERY_PARAM_RESULTS) results: Int = 15
+        @Query(QUERY_PARAM_NOINFO) noinfo: String = CONTAIN_INFO,
+        @Query(QUERY_PARAM_RESULTS) results: Int = LIMIT_RESULT
     ): ClientsListDto
 
     companion object {
@@ -18,5 +18,8 @@ interface ApiService {
         private const val PARAM_INCLUDES = "name,email,picture"
         private const val QUERY_PARAM_NOINFO = "noinfo"
         private const val QUERY_PARAM_RESULTS = "results"
+
+        private const val LIMIT_RESULT = 15
+        private const val CONTAIN_INFO = "noinfo"
     }
 }

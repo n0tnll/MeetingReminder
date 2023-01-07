@@ -1,6 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.MeetingReminder" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.MeetingReminder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -12,5 +12,49 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.MeetingReminder.LightDark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/black</item>
+        <!--Buttons-->
+        <item name="materialButtonStyle">@style/Widget.MeetingReminder.ButtonStyle</item>
+        <!--FloatingActionButton-->
+        <item name="floatingActionButtonStyle">@style/Widget.MeetingReminder.FloatingActionButton</item>
+        <!--TextInputLayout-->
+        <item name="textInputStyle">@style/Widget.MeetingReminder.TextInputLayout</item>
+        <!--TextInputLayout-->
+        <item name="editTextStyle">@style/Widget.MeetingReminder.EditText</item>
+        <item name="android:windowBackground">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="Widget.MeetingReminder.ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/blue_light</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="Widget.MeetingReminder.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="tint">@color/white</item>
+        <item name="android:backgroundTint">@color/blue_light</item>
+    </style>
+
+    <style name="Widget.MeetingReminder.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/blue_light</item>
+        <item name="hintTextColor">@color/blue_light</item>
+        <item name="boxBackgroundColor">#921E1E1E</item>
+    </style>
+
+    <style name="Widget.MeetingReminder.EditText" parent="ThemeOverlay.MaterialComponents">
+        <item name="android:textCursorDrawable">@drawable/custom_edit_text_cursor</item>
+        <item name="colorAccent">@android:color/holo_red_light</item>
     </style>
 </resources>

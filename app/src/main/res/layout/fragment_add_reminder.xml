@@ -7,25 +7,18 @@
     android:padding="16dp"
     tools:context=".presentation.fragments.AddReminderFragment">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_screen_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Создать напоминания" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ti_reminder_title"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:errorEnabled="true"
+        app:errorIconDrawable="@drawable/ic_input_field_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_screen_title">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:theme="@style/Widget.MeetingReminder.EditText"
             android:id="@+id/et_reminder_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,17 +28,19 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ti_reminder_client"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:endIconDrawable="@drawable/ic_baseline_contacts"
         app:endIconMode="custom"
+        app:errorEnabled="true"
+        app:errorIconDrawable="@drawable/ic_input_field_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ti_reminder_title">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:theme="@style/Widget.MeetingReminder.EditText"
             android:id="@+id/et_reminder_client"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,15 +50,17 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ti_reminder_client_email"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        app:errorEnabled="true"
+        app:errorIconDrawable="@drawable/ic_input_field_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ti_reminder_client">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:theme="@style/Widget.MeetingReminder.EditText"
             android:id="@+id/et_reminder_client_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -73,10 +70,9 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ti_reminder_date"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/ti_reminder_time"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -84,6 +80,7 @@
         app:layout_constraintTop_toBottomOf="@id/ti_reminder_client_email">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:theme="@style/Widget.MeetingReminder.EditText"
             android:id="@+id/et_reminder_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,19 +90,22 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ti_reminder_time"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        app:errorEnabled="true"
+        app:errorIconDrawable="@drawable/ic_input_field_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ti_reminder_date"
         app:layout_constraintTop_toBottomOf="@id/ti_reminder_client_email">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:theme="@style/Widget.MeetingReminder.EditText"
             android:id="@+id/et_reminder_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/reminder_time" />
+            android:hint="@string/reminder_time"
+            android:textColorHint="#757575" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,4 +118,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ti_reminder_date" />
+        <!--app:backgroundTint="@color/blue_light"-->
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,7 @@ interface ReminderRepository {
 
     suspend fun getReminderItem(reminderItemId: Int): Reminder
 
-    suspend fun loadClientsList()
+    suspend fun loadClientsList(): List<Client>
 
     suspend fun chooseClient(clientId: Int): Client
 }

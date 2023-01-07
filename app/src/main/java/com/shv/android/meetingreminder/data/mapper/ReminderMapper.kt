@@ -5,6 +5,7 @@ import com.shv.android.meetingreminder.data.network.model.ClientDto
 import com.shv.android.meetingreminder.data.network.model.ClientsListDto
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
+import java.util.*
 
 class ReminderMapper {
 
@@ -24,13 +25,13 @@ class ReminderMapper {
         client = reminder.client
     )
 
-    fun mapClientDtoToEntity(clientDto: ClientDto) = Client(
-        clientId = clientDto.id.value,
+    private fun mapClientDtoToEntity(clientDto: ClientDto) = Client(
+        clientId = UUID.randomUUID().toString(),
         titleName = clientDto.clientNameDto.title,
         firstName = clientDto.clientNameDto.first,
         lastName = clientDto.clientNameDto.last,
         email = clientDto.email,
-        imgUrl = clientDto.clientPictures.medium
+        imgUrl = clientDto.clientPictures.large
     )
 
     fun mapListDtoToListEntity(listDto: ClientsListDto) = listDto.clients.map {

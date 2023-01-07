@@ -1,16 +1,17 @@
 package com.shv.android.meetingreminder.presentation.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.databinding.ClientItemBinding
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.squareup.picasso.Picasso
 
-class ClientAdapter(private val clientsList: List<Client>, private val context: Context) :
-    RecyclerView.Adapter<ClientViewHolder>() {
+class ClientAdapter :
+    ListAdapter<Client, ClientViewHolder>(ClientDiffCallback()) {
+
+    var onClientClickListener: OnClientClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientViewHolder {
         val binding = ClientItemBinding.inflate(
@@ -22,12 +23,13 @@ class ClientAdapter(private val clientsList: List<Client>, private val context: 
     }
 
     override fun onBindViewHolder(holder: ClientViewHolder, position: Int) {
-        val client = clientsList[position]
+        val client = getItem(position)
+        val context = holder.itemView.context
         with(holder.binding) {
             with(client) {
                 val fullNameTemplate = context.resources.getString(R.string.full_name_template)
 
-                Picasso.get().load(imgUrl).into(ivClientPhoto)
+                Picasso.get().load(imgUrl).fit().into(ivClientPhoto)
                 tvClientName.text = String.format(
                     fullNameTemplate,
                     titleName,
@@ -36,9 +38,13 @@ class ClientAdapter(private val clientsList: List<Client>, private val context: 
                 )
                 tvClientEmail.text = email
             }
+            root.setOnClickListener {
+                onClientClickListener?.onClientClick(client)
+            }
         }
     }
 
-
-    override fun getItemCount() = clientsList.size
+    interface OnClientClickListener {
+        fun onClientClick(client: Client)
+    }
 }
