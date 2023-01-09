@@ -9,14 +9,7 @@
         android:id="@+id/clientListFragment"
         android:name="com.shv.android.meetingreminder.presentation.fragments.ClientListFragment"
         android:label="List Clients"
-        tools:layout="@layout/fragment_client_list">
-        <action
-            android:id="@+id/action_clientListFragment_to_addReminderFragment"
-            app:destination="@id/addReminderFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:popUpTo="@id/addReminderFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_client_list"/>
     <fragment
         android:id="@+id/addReminderFragment"
         android:name="com.shv.android.meetingreminder.presentation.fragments.AddReminderFragment"

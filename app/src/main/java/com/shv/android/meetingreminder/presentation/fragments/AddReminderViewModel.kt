@@ -25,6 +25,10 @@ class AddReminderViewModel(application: Application) : AndroidViewModel(applicat
     val errorInputTitle: LiveData<Boolean>
         get() = _errorInputTitle
 
+    private val _client = MutableLiveData<Client?>()
+    val client: LiveData<Client?>
+        get() = _client
+
     private val _errorClientField = MutableLiveData(true)
     val errorClientField: LiveData<Boolean>
         get() = _errorClientField
@@ -57,6 +61,10 @@ class AddReminderViewModel(application: Application) : AndroidViewModel(applicat
             addReminderUseCase(reminder)
             finishWork()
         }
+    }
+
+    fun setClient(client: Client?) {
+        _client.value = client
     }
 
     private fun isValidReminder() {
@@ -100,8 +108,10 @@ class AddReminderViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun localDateFromString(dateString: String): LocalDate {
-        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.getDefault())
-        return LocalDate.parse(dateString, dateFormatter)
+        if (dateString.isNotBlank()) {
+            val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.getDefault())
+            return LocalDate.parse(dateString, dateFormatter)
+        } else return LocalDate.now()
     }
 
     private fun localTimeFromString(timeString: String): LocalTime {

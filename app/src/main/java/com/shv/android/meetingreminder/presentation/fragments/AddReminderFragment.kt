@@ -1,6 +1,5 @@
 package com.shv.android.meetingreminder.presentation.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
 import android.util.Log
@@ -11,7 +10,6 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -27,19 +25,8 @@ class AddReminderFragment : Fragment() {
     private val binding: FragmentAddReminderBinding
         get() = _binding ?: throw RuntimeException("FragmentAddReminderBinding is null")
 
-    private val args by navArgs<AddReminderFragmentArgs>()
     private val viewModel: AddReminderViewModel by lazy {
         ViewModelProvider(this)[AddReminderViewModel::class.java]
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.d("AddReminderFragment", "onAttach")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("AddReminderFragment", "onCreate")
     }
 
     override fun onCreateView(
@@ -57,14 +44,26 @@ class AddReminderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("AddReminderFragment", "onViewCreated")
-        val client = args.selectedClient
         textWatchers()
-        fillFields(client)
+
+        viewModel.client.observe(viewLifecycleOwner) {
+            if (it != null) {
+                val clientText = String.format("ФИО: %s\nEmail: %s", it.fullName, it.email)
+                binding.etReminderClient.setText(clientText)
+            }
+        }
 
         binding.etReminderClient.setOnClickListener {
+            val currentBackStackEntry = findNavController().currentBackStackEntry
+            val savedStateHandle = currentBackStackEntry?.savedStateHandle
+            savedStateHandle?.getLiveData<Client>(RESULT_FROM_CLIENT_LIST)
+                ?.observe(currentBackStackEntry) {
+                    viewModel.setClient(it)
+                }
             launchClientListFragment()
         }
+
+        binding.etReminderDate.setText(getCurrentDateToString())
 
         viewModel.reminderValid.observe(viewLifecycleOwner) {
             binding.btnSaveReminder.isEnabled = it
@@ -73,13 +72,13 @@ class AddReminderFragment : Fragment() {
         binding.btnSaveReminder.setOnClickListener {
             with(binding) {
                 val title = etReminderTitle.text.toString()
-                val selectedClient = args.selectedClient
+                val selectedClient = viewModel.client.value
                 val date = etReminderDate.text.toString()
                 val time = etReminderTime.text.toString()
 
                 viewModel.addReminder(
                     title,
-                    selectedClient!!,
+                    selectedClient ?: throw RuntimeException("Client is null"),
                     date,
                     time
                 )
@@ -93,17 +92,6 @@ class AddReminderFragment : Fragment() {
 
         binding.etReminderTime.setOnClickListener {
             showTimePicker()
-        }
-    }
-
-    private fun fillFields(client: Client?) {
-        with(binding) {
-            btnSaveReminder.isEnabled = false
-            etReminderDate.setText(getCurrentDateToString())
-            client?.let {
-                val clientText = String.format("ФИО: %s\nEmail: %s", it.fullName, it.email)
-                etReminderClient.setText(clientText)
-            }
         }
     }
 
@@ -216,16 +204,6 @@ class AddReminderFragment : Fragment() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.d("AddReminderFragment", "onSaveInstanceState")
-        with(binding) {
-            outState.apply {
-                putString(BUNDLE_TITLE, etReminderTitle.text.toString())
-            }
-        }
-    }
-
     private fun closeAddReminderFragment() {
         viewModel.isCompleted.observe(viewLifecycleOwner) {
             findNavController().popBackStack()
@@ -233,23 +211,12 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun launchClientListFragment() {
-        findNavController().navigate(R.id.action_addReminderFragment_to_clientListFragment)
+        findNavController().navigate(AddReminderFragmentDirections.actionAddReminderFragmentToClientListFragment())
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("AddReminderFragment", "onDestroyView")
         _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("AddReminderFragment", "onDestroy")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("AddReminderFragment", "onDetach")
     }
 
     companion object {
@@ -259,8 +226,6 @@ class AddReminderFragment : Fragment() {
         private const val TIME_PICKER_TAG = "time"
         private const val DATE_PICKER_TAG = "time"
 
-        private const val BUNDLE_TITLE = "title"
-        private const val BUNDLE_DATE = "date"
-        private const val BUNDLE_TIME = "time"
+        const val RESULT_FROM_CLIENT_LIST = "chosen_client"
     }
 }

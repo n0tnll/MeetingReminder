@@ -55,11 +55,14 @@ class ClientListFragment : Fragment() {
     }
 
     private fun launchAddReminderFragment(client: Client) {
-        findNavController().navigate(
-            ClientListFragmentDirections.actionClientListFragmentToAddReminderFragment(
-                client
-            )
-        )
+        val saveStateHandle = findNavController().previousBackStackEntry?.savedStateHandle
+        saveStateHandle?.set(AddReminderFragment.RESULT_FROM_CLIENT_LIST, client)
+        findNavController().navigateUp()
+//        findNavController().navigate(
+//            ClientListFragmentDirections.actionClientListFragmentToAddReminderFragment(
+//                client
+//            )
+//        )
     }
 
     override fun onDestroyView() {
