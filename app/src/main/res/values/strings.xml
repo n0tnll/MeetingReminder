@@ -14,4 +14,6 @@
     <string name="button_save">Сохранить</string>
     <string name="full_name_template">%s %s %s</string>
     <string name="empty_field_error">Поле не должно быть пустым</string>
+    <string name="date_picker_title">Дата встречи</string>
+    <string name="time_picker_title">Время встречи</string>
 </resources>

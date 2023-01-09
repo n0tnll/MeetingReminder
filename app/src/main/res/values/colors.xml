@@ -12,7 +12,7 @@
     
     <color name="toolbar">#FFFFFFFF</color>
     <color name="cardText">#545454</color>
-    <color name="button">#2962FF</color>
+
     <color name="title">#000000</color>
     <color name="mainBackground">#F1F1F1</color>
     <color name="boxStroke">#2962FF</color>

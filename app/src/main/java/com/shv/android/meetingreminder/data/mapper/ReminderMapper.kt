@@ -11,6 +11,7 @@ class ReminderMapper {
 
     fun mapDbModelToEntity(dbModel: ReminderDbModel) = Reminder(
         id = dbModel.id,
+        fullName = dbModel.client.fullName,
         title = dbModel.title,
         date = dbModel.date,
         time = dbModel.time,
@@ -25,14 +26,22 @@ class ReminderMapper {
         client = reminder.client
     )
 
-    private fun mapClientDtoToEntity(clientDto: ClientDto) = Client(
-        clientId = UUID.randomUUID().toString(),
-        titleName = clientDto.clientNameDto.title,
-        firstName = clientDto.clientNameDto.first,
-        lastName = clientDto.clientNameDto.last,
-        email = clientDto.email,
-        imgUrl = clientDto.clientPictures.large
-    )
+    private fun mapClientDtoToEntity(clientDto: ClientDto): Client {
+        return Client(
+            clientId = UUID.randomUUID().toString(),
+            fullName = mapFullName(
+                clientDto.clientNameDto.title,
+                clientDto.clientNameDto.first,
+                clientDto.clientNameDto.last
+            ),
+            email = clientDto.email,
+            imgUrl = clientDto.clientPictures.large
+        )
+    }
+
+    private fun mapFullName(title: String, first: String, last: String): String {
+        return "$title $first $last"
+    }
 
     fun mapListDtoToListEntity(listDto: ClientsListDto) = listDto.clients.map {
         mapClientDtoToEntity(it)

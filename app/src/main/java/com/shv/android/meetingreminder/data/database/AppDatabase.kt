@@ -26,9 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context,
                     AppDatabase::class.java,
                     DB_NAME
-                )
-                    .allowMainThreadQueries() //TODO: не забыть удалить после добавления корутинов
-                    .build()
+                ).build()
                 db = instance
                 return instance
             }

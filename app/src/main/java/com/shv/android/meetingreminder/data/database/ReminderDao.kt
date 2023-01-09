@@ -9,7 +9,7 @@ import androidx.room.Query
 @Dao
 interface ReminderDao {
 
-    @Query("SELECT * FROM reminders ORDER BY date DESC")
+    @Query("SELECT * FROM reminders ORDER BY date,time DESC")
     fun getReminderList(): LiveData<List<ReminderDbModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

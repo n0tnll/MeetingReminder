@@ -1,7 +1,6 @@
 package com.shv.android.meetingreminder.presentation.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +38,7 @@ class ClientListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         val adapter = ClientAdapter()
         binding.rvClientList.adapter = adapter
 
@@ -49,7 +49,6 @@ class ClientListFragment : Fragment() {
         }
 
         viewModel.clientsList.observe(viewLifecycleOwner) {
-            Log.d("ClientListFragmentTest", it.toString())
             adapter.submitList(it)
         }
 
