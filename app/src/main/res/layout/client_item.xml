@@ -19,7 +19,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:contentDescription="@string/client_photo_description"
-            android:scaleType="center"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_client_no_photo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +27,6 @@
             app:riv_border_color="#333333"
             app:riv_border_width="1dp"
             app:riv_corner_radius="30dp"
-            app:riv_mutate_background="true"
             app:riv_oval="true" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -36,6 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="8dp"
+            android:drawableStart="@drawable/ic_person"
+            android:elegantTextHeight="true"
             app:layout_constraintBottom_toTopOf="@+id/tv_client_email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_client_photo"
@@ -48,6 +49,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            app:drawableStartCompat="@drawable/ic_email"
+            android:elegantTextHeight="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_client_photo"

@@ -25,7 +25,7 @@ class ClientAdapter :
         val client = getItem(position)
         with(holder.binding) {
             with(client) {
-                Picasso.get().load(imgUrl).fit().into(ivClientPhoto)
+                Picasso.get().load(imgUrl).into(ivClientPhoto)
                 tvClientName.text = fullName
                 tvClientEmail.text = email
             }

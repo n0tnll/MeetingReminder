@@ -53,7 +53,6 @@ class ReminderRepositoryImpl(
         try {
             val clients = apiService.getContacts()
             val clientsListEntity = mapper.mapListDtoToListEntity(clients)
-            Log.d("ReminderRepositoryImpl", "val clientsListEntity: $clientsListEntity")
             result.addAll(clientsListEntity)
         } catch (e: Exception) {
             Log.e("ReminderRepositoryImpl", "Что-то с загрузкой ${e.message}")
