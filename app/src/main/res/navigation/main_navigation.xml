@@ -32,7 +32,7 @@
             android:id="@+id/action_reminderListFragment_to_addReminderFragment"
             app:destination="@id/addReminderFragment"
             app:enterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpToInclusive="false" />
     </fragment>
 </navigation>

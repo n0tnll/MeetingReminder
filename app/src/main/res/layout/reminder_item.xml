@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="16dp"
     android:clickable="true"
-    app:cardUseCompatPadding="true"
-    android:focusable="true">
+    android:focusable="true"
+    app:cardCornerRadius="16dp"
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,8 +18,7 @@
             android:id="@+id/tv_reminder_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="22.01.2022" />
@@ -36,8 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/tv_reminder_date"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="15:00" />
@@ -93,9 +91,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            app:drawableStartCompat="@drawable/ic_email"
             android:elegantTextHeight="true"
             android:textSize="14sp"
+            app:drawableStartCompat="@drawable/ic_email"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_client_photo"
