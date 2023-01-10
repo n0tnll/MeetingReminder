@@ -19,10 +19,19 @@ class ClientsViewModel(application: Application) : AndroidViewModel(application)
     val clientsList: LiveData<List<Client>>
         get() = _clientsList
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
     init {
         viewModelScope.launch {
             val list = loadClientsListUseCase()
             _clientsList.value = list
+            checkIsLoad()
         }
+    }
+
+    private fun checkIsLoad() {
+        _isLoading.value = clientsList.value?.size == 0
     }
 }

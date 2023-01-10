@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -38,7 +39,6 @@ class ClientListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val adapter = ClientAdapter()
         binding.rvClientList.adapter = adapter
 
@@ -46,6 +46,10 @@ class ClientListFragment : Fragment() {
             override fun onClientClick(client: Client) {
                 launchAddReminderFragment(client)
             }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = it
         }
 
         viewModel.clientsList.observe(viewLifecycleOwner) {
@@ -58,11 +62,6 @@ class ClientListFragment : Fragment() {
         val saveStateHandle = findNavController().previousBackStackEntry?.savedStateHandle
         saveStateHandle?.set(AddReminderFragment.RESULT_FROM_CLIENT_LIST, client)
         findNavController().navigateUp()
-//        findNavController().navigate(
-//            ClientListFragmentDirections.actionClientListFragmentToAddReminderFragment(
-//                client
-//            )
-//        )
     }
 
     override fun onDestroyView() {

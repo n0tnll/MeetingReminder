@@ -17,6 +17,7 @@ import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.databinding.FragmentAddReminderBinding
 import com.shv.android.meetingreminder.domain.entity.Client
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 class AddReminderFragment : Fragment() {
@@ -136,7 +137,7 @@ class AddReminderFragment : Fragment() {
                     viewModel.validateTime(dateFromEditText, timeFromEditText)
                     viewModel.errorDate.observe(viewLifecycleOwner) { isNotValid ->
                         if (isNotValid) {
-                            tiReminderDate.error = "Неверная дата"
+                            tiReminderDate.error = getString(R.string.incorrect_date)
                         } else {
                             tiReminderDate.error = null
                         }
@@ -153,7 +154,7 @@ class AddReminderFragment : Fragment() {
                         viewModel.validateTime(dateFromEditText, timeFromEditText)
                         viewModel.errorTime.observe(viewLifecycleOwner) { isNotValid ->
                             if (isNotValid) {
-                                tiReminderTime.error = "Неверное время"
+                                tiReminderTime.error = getString(R.string.incorrect_time)
                             } else {
                                 tiReminderTime.error = null
                             }
@@ -186,8 +187,8 @@ class AddReminderFragment : Fragment() {
         val timePicker = MaterialTimePicker.Builder()
             .setTheme(R.style.ThemeOverlay_MeetingReminder_TimePicker)
             .setTimeFormat(clockFormat)
-            .setHour(TIME_PICKER_DEFAULT_HOUR)
-            .setMinute(TIME_PICKER_DEFAULT_MINUTE)
+            .setHour(LocalDateTime.now().hour)
+            .setMinute(LocalDateTime.now().minute)
             .setTitleText(getString(R.string.time_picker_title))
             .build()
 
@@ -200,7 +201,8 @@ class AddReminderFragment : Fragment() {
                 hour = "0${timePicker.hour}"
             if (timePicker.minute < 10 || timePicker.minute == 0)
                 minute = "0${timePicker.minute}"
-            binding.etReminderTime.setText("$hour:$minute")
+            val timeText = String.format("%s:%s", hour, minute)
+            binding.etReminderTime.setText(timeText)
         }
     }
 
@@ -211,7 +213,8 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun launchClientListFragment() {
-        findNavController().navigate(AddReminderFragmentDirections.actionAddReminderFragmentToClientListFragment())
+        findNavController()
+            .navigate(AddReminderFragmentDirections.actionAddReminderFragmentToClientListFragment())
     }
 
     override fun onDestroyView() {
@@ -220,8 +223,6 @@ class AddReminderFragment : Fragment() {
     }
 
     companion object {
-        private const val TIME_PICKER_DEFAULT_HOUR = 12
-        private const val TIME_PICKER_DEFAULT_MINUTE = 0
 
         private const val TIME_PICKER_TAG = "time"
         private const val DATE_PICKER_TAG = "time"

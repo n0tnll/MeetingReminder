@@ -16,4 +16,6 @@
     <string name="empty_field_error">Поле не должно быть пустым</string>
     <string name="date_picker_title">Дата встречи</string>
     <string name="time_picker_title">Время встречи</string>
+    <string name="incorrect_date">Неверная дата</string>
+    <string name="incorrect_time">Неверное время</string>
 </resources>
