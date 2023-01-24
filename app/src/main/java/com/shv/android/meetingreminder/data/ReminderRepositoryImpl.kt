@@ -12,6 +12,7 @@ import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ReminderRepositoryImpl(
@@ -55,12 +56,17 @@ class ReminderRepositoryImpl(
 
     override suspend fun loadClientsList(): List<Client> {
         val result = mutableListOf<Client>()
-        try {
-            val clients = apiService.getContacts()
-            val clientsListEntity = mapper.mapListDtoToListEntity(clients)
-            result.addAll(clientsListEntity)
-        } catch (e: Exception) {
-            Log.e("ReminderRepositoryImpl", "Что-то с загрузкой ${e.message}")
+        var isLoadingCompleted = false
+        while (!isLoadingCompleted) {
+            try {
+                val clients = apiService.getContacts()
+                val clientsListEntity = mapper.mapListDtoToListEntity(clients)
+                result.addAll(clientsListEntity)
+                isLoadingCompleted = true
+            } catch (e: Exception) {
+                Log.e("ReminderRepositoryImpl", "Проблема с загрузкой: ${e.message}")
+                delay(10000)
+            }
         }
         return result
     }
