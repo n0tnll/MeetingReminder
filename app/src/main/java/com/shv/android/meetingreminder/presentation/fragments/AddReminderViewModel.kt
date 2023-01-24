@@ -1,11 +1,9 @@
 package com.shv.android.meetingreminder.presentation.fragments
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shv.android.meetingreminder.data.ReminderRepositoryImpl
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
 import com.shv.android.meetingreminder.domain.usecase.AddReminderUseCase
@@ -15,11 +13,11 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 
-class AddReminderViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository = ReminderRepositoryImpl(application)
-    private val addReminderUseCase = AddReminderUseCase(repository)
+class AddReminderViewModel @Inject constructor(
+    private val addReminderUseCase: AddReminderUseCase
+) : ViewModel() {
 
     private val _errorInputTitle = MutableLiveData(true)
     val errorInputTitle: LiveData<Boolean>

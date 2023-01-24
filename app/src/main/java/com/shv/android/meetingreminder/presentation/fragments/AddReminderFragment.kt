@@ -1,5 +1,6 @@
 package com.shv.android.meetingreminder.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
 import android.util.Log
@@ -16,9 +17,11 @@ import com.google.android.material.timepicker.TimeFormat
 import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.databinding.FragmentAddReminderBinding
 import com.shv.android.meetingreminder.domain.entity.Client
+import com.shv.android.meetingreminder.presentation.MeetingReminderApplication
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
+import javax.inject.Inject
 
 class AddReminderFragment : Fragment() {
 
@@ -26,8 +29,20 @@ class AddReminderFragment : Fragment() {
     private val binding: FragmentAddReminderBinding
         get() = _binding ?: throw RuntimeException("FragmentAddReminderBinding is null")
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModel: AddReminderViewModel by lazy {
-        ViewModelProvider(this)[AddReminderViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[AddReminderViewModel::class.java]
+    }
+
+    private val component by lazy {
+        (requireActivity().application as MeetingReminderApplication).component
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

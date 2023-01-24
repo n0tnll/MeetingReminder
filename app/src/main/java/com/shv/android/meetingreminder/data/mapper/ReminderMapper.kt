@@ -6,8 +6,9 @@ import com.shv.android.meetingreminder.data.network.model.ClientsListDto
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
 import java.util.*
+import javax.inject.Inject
 
-class ReminderMapper {
+class ReminderMapper @Inject constructor() {
 
     fun mapDbModelToEntity(dbModel: ReminderDbModel) = Reminder(
         id = dbModel.id,

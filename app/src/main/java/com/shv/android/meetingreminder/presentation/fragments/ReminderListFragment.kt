@@ -1,5 +1,6 @@
 package com.shv.android.meetingreminder.presentation.fragments
 
+import android.content.Context
 import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.databinding.FragmentReminderListBinding
+import com.shv.android.meetingreminder.presentation.MeetingReminderApplication
 import com.shv.android.meetingreminder.presentation.adapters.ReminderAdapter
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-
+import javax.inject.Inject
 
 class ReminderListFragment : Fragment() {
 
@@ -24,11 +26,24 @@ class ReminderListFragment : Fragment() {
     private val binding: FragmentReminderListBinding
         get() = _binding ?: throw RuntimeException("FragmentReminderListBinding is null.")
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModel: ReminderListViewModel by lazy {
-        ViewModelProvider(this)[ReminderListViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ReminderListViewModel::class.java]
     }
+
     private val adapter: ReminderAdapter by lazy {
         ReminderAdapter()
+    }
+
+    private val component by lazy {
+        (requireActivity().application as MeetingReminderApplication).component
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(
