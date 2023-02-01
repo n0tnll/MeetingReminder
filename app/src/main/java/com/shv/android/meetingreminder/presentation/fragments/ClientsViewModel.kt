@@ -29,6 +29,14 @@ class ClientsViewModel @Inject constructor(
         }
     }
 
+    fun retryLoadClients() {
+        viewModelScope.launch {
+            val list = loadClientsListUseCase()
+            _clientsList.value = list
+            checkIsLoad()
+        }
+    }
+
     private fun checkIsLoad() {
         _isLoading.value = clientsList.value?.size == 0
     }

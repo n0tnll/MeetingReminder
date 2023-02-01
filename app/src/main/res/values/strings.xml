@@ -18,4 +18,5 @@
     <string name="time_picker_title">Время встречи</string>
     <string name="incorrect_date">Неверная дата</string>
     <string name="incorrect_time">Неверное время</string>
+    <string name="btn_retry_load">Повторить</string>
 </resources>
