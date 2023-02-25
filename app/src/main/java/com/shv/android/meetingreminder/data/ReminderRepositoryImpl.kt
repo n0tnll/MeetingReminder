@@ -1,20 +1,23 @@
 package com.shv.android.meetingreminder.data
 
 import android.app.Application
-import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.data.database.ReminderDao
 import com.shv.android.meetingreminder.data.mapper.ReminderMapper
 import com.shv.android.meetingreminder.data.network.api.ApiService
 import com.shv.android.meetingreminder.domain.ReminderRepository
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
+import com.shv.android.meetingreminder.domain.usecase.validation_usecase.ValidationResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.*
 import javax.inject.Inject
 
 class ReminderRepositoryImpl @Inject constructor(
@@ -24,9 +27,7 @@ class ReminderRepositoryImpl @Inject constructor(
     private val mapper: ReminderMapper
 ) : ReminderRepository {
 
-    private val localBroadcastManager by lazy {
-        LocalBroadcastManager.getInstance(application)
-    }
+    private var today = false
 
     override fun getReminderList(): LiveData<List<Reminder>> {
         return Transformations.map(reminderDao.getReminderList()) {
@@ -60,17 +61,70 @@ class ReminderRepositoryImpl @Inject constructor(
     }
 
     override suspend fun loadClientsList(): List<Client> {
-        val result = mutableListOf<Client>()
-        try {
-            val clients = apiService.getContacts()
-            val clientsListEntity = mapper.mapListDtoToListEntity(clients)
-            result.addAll(clientsListEntity)
-        } catch (e: Exception) {
-            Log.e("ReminderRepositoryImpl", "Проблема с загрузкой: ${e.message}")
-            Intent("not_connected").apply {
-                localBroadcastManager.sendBroadcast(this)
-            }
+        val clients = apiService.getContacts()
+        return mapper.mapListDtoToListEntity(clients)
+    }
+
+    override fun validateTitle(title: String): ValidationResult {
+        if (title.isBlank()) {
+            return ValidationResult(
+                successful = false,
+                errorMessage = application.applicationContext.getString(R.string.empty_field_error)
+            )
         }
-        return result
+        return ValidationResult(
+            successful = true
+        )
+    }
+
+    override fun validateClient(client: String): ValidationResult {
+        if (client.isBlank()) {
+            return ValidationResult(
+                successful = false,
+                errorMessage = application.applicationContext.getString(R.string.empty_field_error)
+            )
+        }
+        return ValidationResult(
+            successful = true
+        )
+    }
+
+    override fun validateDate(date: Calendar): ValidationResult {
+        val dateNow = LocalDate.now()
+        val meetingDate =
+            LocalDateTime.ofInstant(date.toInstant(), date.timeZone.toZoneId()).toLocalDate()
+
+        today = meetingDate == dateNow
+
+        if (meetingDate < dateNow) {
+            today = false
+            return ValidationResult(
+                successful = false,
+                errorMessage = application.applicationContext.getString(R.string.incorrect_date)
+            )
+        }
+        return ValidationResult(
+            successful = true
+        )
+    }
+
+    override fun validateTime(time: Calendar?): ValidationResult {
+        if (time == null) {
+            return ValidationResult(
+                successful = true
+            )
+        }
+        val timeNow = LocalTime.now()
+        val meetingTime = LocalTime.of(time[Calendar.HOUR_OF_DAY], time[Calendar.MINUTE])
+        if (today) {
+            if (meetingTime <= timeNow)
+                return ValidationResult(
+                    successful = false,
+                    errorMessage = application.applicationContext.getString(R.string.incorrect_time)
+                )
+        }
+        return ValidationResult(
+            successful = true
+        )
     }
 }

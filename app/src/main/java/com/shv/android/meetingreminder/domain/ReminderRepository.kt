@@ -3,6 +3,8 @@ package com.shv.android.meetingreminder.domain
 import androidx.lifecycle.LiveData
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
+import com.shv.android.meetingreminder.domain.usecase.validation_usecase.ValidationResult
+import java.util.*
 
 interface ReminderRepository {
 
@@ -19,4 +21,12 @@ interface ReminderRepository {
     suspend fun loadClientsList(): List<Client>
 
     suspend fun chooseClient(clientId: Int): Client
+
+    fun validateTitle(title: String): ValidationResult
+
+    fun validateClient(client: String): ValidationResult
+
+    fun validateDate(date: Calendar): ValidationResult
+
+    fun validateTime(time: Calendar?): ValidationResult
 }

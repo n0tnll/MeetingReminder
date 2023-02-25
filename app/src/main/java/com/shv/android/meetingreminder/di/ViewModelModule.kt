@@ -1,9 +1,9 @@
 package com.shv.android.meetingreminder.di
 
 import androidx.lifecycle.ViewModel
-import com.shv.android.meetingreminder.presentation.fragments.AddReminderViewModel
-import com.shv.android.meetingreminder.presentation.fragments.ClientsViewModel
-import com.shv.android.meetingreminder.presentation.fragments.ReminderListViewModel
+import com.shv.android.meetingreminder.presentation.viewmodels.AddReminderViewModel
+import com.shv.android.meetingreminder.presentation.viewmodels.ClientsViewModel
+import com.shv.android.meetingreminder.presentation.viewmodels.ReminderListViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

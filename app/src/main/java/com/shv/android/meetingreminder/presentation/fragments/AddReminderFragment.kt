@@ -17,7 +17,11 @@ import com.google.android.material.timepicker.TimeFormat
 import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.databinding.FragmentAddReminderBinding
 import com.shv.android.meetingreminder.domain.entity.Client
+import com.shv.android.meetingreminder.presentation.AddReminderFormEvent
 import com.shv.android.meetingreminder.presentation.MeetingReminderApplication
+import com.shv.android.meetingreminder.presentation.viewmodels.AddReminderState
+import com.shv.android.meetingreminder.presentation.viewmodels.AddReminderViewModel
+import com.shv.android.meetingreminder.presentation.viewmodels.ViewModelFactory
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
@@ -61,120 +65,88 @@ class AddReminderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         textWatchers()
+        observeViewModel()
+        setOnClickListeners()
+    }
 
+    private fun setOnClickListeners() {
+        with(binding) {
+            etReminderClient.setOnClickListener {
+                selectClient()
+            }
+            etReminderDate.setText(getDateFromPickerToString(calendar))
+            btnSaveReminder.setOnClickListener {
+                selectReminderFields()
+            }
+            etReminderDate.setOnClickListener {
+                showDatePicker()
+            }
+            etReminderTime.setOnClickListener {
+                showTimePicker()
+            }
+        }
+    }
+
+    private fun FragmentAddReminderBinding.selectReminderFields() {
+        val title = etReminderTitle.text.toString()
+        val selectedClient = viewModel.client.value
+        val date = etReminderDate.text.toString()
+        val time = etReminderTime.text.toString()
+        viewModel.addReminder(
+            title,
+            selectedClient ?: throw RuntimeException("Client is null"),
+            date,
+            time
+        )
+    }
+
+    private fun selectClient() {
+        val currentBackStackEntry = findNavController().currentBackStackEntry
+        val savedStateHandle = currentBackStackEntry?.savedStateHandle
+        savedStateHandle?.getLiveData<Client>(RESULT_FROM_CLIENT_LIST)
+            ?.observe(currentBackStackEntry) {
+                viewModel.setClient(it)
+            }
+        launchClientListFragment()
+    }
+
+    private fun observeViewModel() {
         viewModel.client.observe(viewLifecycleOwner) {
             if (it != null) {
                 val clientText = String.format("ФИО: %s\nEmail: %s", it.fullName, it.email)
                 binding.etReminderClient.setText(clientText)
             }
         }
-
-        binding.etReminderClient.setOnClickListener {
-            val currentBackStackEntry = findNavController().currentBackStackEntry
-            val savedStateHandle = currentBackStackEntry?.savedStateHandle
-            savedStateHandle?.getLiveData<Client>(RESULT_FROM_CLIENT_LIST)
-                ?.observe(currentBackStackEntry) {
-                    viewModel.setClient(it)
-                }
-            launchClientListFragment()
-        }
-
-        binding.etReminderDate.setText(getCurrentDateToString())
-
-        viewModel.reminderValid.observe(viewLifecycleOwner) {
-            binding.btnSaveReminder.isEnabled = it
-        }
-
-        binding.btnSaveReminder.setOnClickListener {
+        viewModel.state.observe(viewLifecycleOwner) {
             with(binding) {
-                val title = etReminderTitle.text.toString()
-                val selectedClient = viewModel.client.value
-                val date = etReminderDate.text.toString()
-                val time = etReminderTime.text.toString()
-
-                viewModel.addReminder(
-                    title,
-                    selectedClient ?: throw RuntimeException("Client is null"),
-                    date,
-                    time
-                )
-                closeAddReminderFragment()
+                when (it) {
+                    is AddReminderState -> {
+                        tiReminderTitle.error = it.titleError
+                        tiReminderClient.error = it.clientError
+                        tiReminderDate.error = it.dateError
+                        tiReminderTime.error = it.timeError
+                        btnSaveReminder.isEnabled = it.formValid
+                        if (it.isFinished) closeAddReminderFragment()
+                    }
+                }
             }
         }
-
-        binding.etReminderDate.setOnClickListener {
-            showDatePicker()
-        }
-
-        binding.etReminderTime.setOnClickListener {
-            showTimePicker()
-        }
-    }
-
-    private fun getCurrentDateToString(): String {
-        val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        return formatter.format(Calendar.getInstance().time)
     }
 
     private fun textWatchers() {
         with(binding) {
             etReminderTitle.doOnTextChanged { text, _, _, _ ->
-                viewModel.validateTitle(text.toString())
-                text?.let {
-                    viewModel.errorInputTitle.observe(viewLifecycleOwner) { isNotValid ->
-                        if (isNotValid) {
-                            tiReminderTitle.error = getString(R.string.empty_field_error)
-                        } else {
-                            tiReminderTitle.error = null
-                        }
-                    }
-                }
+                viewModel.onEvent(AddReminderFormEvent.TitleChange(text.toString()))
             }
-
             etReminderClient.doOnTextChanged { text, _, _, _ ->
-                viewModel.validateClient(text.toString())
-                text?.let {
-                    viewModel.errorClientField.observe(viewLifecycleOwner) { isNotValid ->
-                        if (isNotValid) {
-                            tiReminderClient.error = getString(R.string.empty_field_error)
-                        } else {
-                            tiReminderClient.error = null
-                        }
-                    }
-                }
+                viewModel.onEvent(AddReminderFormEvent.ClientChange(text.toString()))
             }
-
-            etReminderDate.doOnTextChanged { text, _, _, _ ->
-                text?.let {
-                    val dateFromEditText = it.toString()
-                    val timeFromEditText = etReminderTime.text.toString()
-                    viewModel.validateDate(dateFromEditText)
-                    viewModel.validateTime(dateFromEditText, timeFromEditText)
-                    viewModel.errorDate.observe(viewLifecycleOwner) { isNotValid ->
-                        if (isNotValid) {
-                            tiReminderDate.error = getString(R.string.incorrect_date)
-                        } else {
-                            tiReminderDate.error = null
-                        }
-                    }
-                }
+            etReminderDate.doOnTextChanged { _, _, _, _ ->
+                viewModel.onEvent(AddReminderFormEvent.DateChange(calendar))
             }
-
-            etReminderTime.doOnTextChanged { text, _, _, _ ->
-                text?.let {
-                    if (it.isNotBlank()) {
-                        val dateFromEditText = etReminderDate.text.toString()
-                        val timeFromEditText = it.toString()
-
-                        viewModel.validateTime(dateFromEditText, timeFromEditText)
-                        viewModel.errorTime.observe(viewLifecycleOwner) { isNotValid ->
-                            if (isNotValid) {
-                                tiReminderTime.error = getString(R.string.incorrect_time)
-                            } else {
-                                tiReminderTime.error = null
-                            }
-                        }
-                    }
+            etReminderTime.doOnTextChanged { _, _, _, count ->
+                if (count > 0) {
+                    viewModel.onEvent(AddReminderFormEvent.TimeChange(calendar))
                 }
             }
         }
@@ -189,8 +161,8 @@ class AddReminderFragment : Fragment() {
         datePickerDialog.show(parentFragmentManager, DATE_PICKER_TAG)
 
         datePickerDialog.addOnPositiveButtonClickListener {
-            val dateFormatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-            val date = dateFormatter.format(Date(it))
+            calendar.timeInMillis = it
+            val date = getDateFromPickerToString(calendar)
             binding.etReminderDate.setText(date)
         }
     }
@@ -210,21 +182,31 @@ class AddReminderFragment : Fragment() {
         timePicker.show(parentFragmentManager, TIME_PICKER_TAG)
 
         timePicker.addOnPositiveButtonClickListener {
-            var hour = timePicker.hour.toString()
-            var minute = timePicker.minute.toString()
-            if (timePicker.hour < 10 || timePicker.hour == 0)
-                hour = "0${timePicker.hour}"
-            if (timePicker.minute < 10 || timePicker.minute == 0)
-                minute = "0${timePicker.minute}"
-            val timeText = String.format("%s:%s", hour, minute)
+            calendar.apply {
+                set(Calendar.HOUR_OF_DAY, timePicker.hour)
+                set(Calendar.MINUTE, timePicker.minute)
+                set(Calendar.MILLISECOND, 0)
+            }
+            val timeText = getTimeFromPickerToString(calendar)
             binding.etReminderTime.setText(timeText)
         }
     }
 
+    private fun getDateFromPickerToString(date: Calendar): String {
+        val formatter = SimpleDateFormat(getString(R.string.date_pattern), Locale.getDefault())
+        return formatter.format(date.time)
+    }
+
+    private fun getTimeFromPickerToString(time: Calendar): String {
+        val timeHour = time[Calendar.HOUR_OF_DAY]
+        val timeMinute = time[Calendar.MINUTE]
+        val hour = if (timeHour in 0..9) "0$timeHour" else timeHour
+        val minute = if (timeMinute in 0..9) "0$timeMinute" else timeMinute
+        return String.format(getString(R.string.time_pattern), hour, minute)
+    }
+
     private fun closeAddReminderFragment() {
-        viewModel.isCompleted.observe(viewLifecycleOwner) {
-            findNavController().popBackStack()
-        }
+        findNavController().popBackStack()
     }
 
     private fun launchClientListFragment() {
@@ -238,10 +220,9 @@ class AddReminderFragment : Fragment() {
     }
 
     companion object {
-
+        private val calendar = Calendar.getInstance()
         private const val TIME_PICKER_TAG = "time"
-        private const val DATE_PICKER_TAG = "time"
-
+        private const val DATE_PICKER_TAG = "date"
         const val RESULT_FROM_CLIENT_LIST = "chosen_client"
     }
 }

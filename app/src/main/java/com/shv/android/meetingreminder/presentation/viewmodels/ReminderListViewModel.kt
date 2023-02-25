@@ -1,4 +1,4 @@
-package com.shv.android.meetingreminder.presentation.fragments
+package com.shv.android.meetingreminder.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

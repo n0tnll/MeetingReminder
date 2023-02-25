@@ -17,6 +17,8 @@ import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.databinding.FragmentReminderListBinding
 import com.shv.android.meetingreminder.presentation.MeetingReminderApplication
 import com.shv.android.meetingreminder.presentation.adapters.ReminderAdapter
+import com.shv.android.meetingreminder.presentation.viewmodels.ReminderListViewModel
+import com.shv.android.meetingreminder.presentation.viewmodels.ViewModelFactory
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import javax.inject.Inject
 
@@ -60,19 +62,20 @@ class ReminderListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
+        observeViewModel()
+        binding.btnAddReminder.setOnClickListener {
+            launchAddReminderFragment()
+        }
+    }
 
+    private fun observeViewModel() {
         viewModel.reminderList.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 binding.llPasteReminder.visibility = View.VISIBLE
             } else
                 binding.llPasteReminder.visibility = View.GONE
             adapter.submitList(it)
-        }
-
-        binding.btnAddReminder.setOnClickListener {
-            launchAddReminderFragment()
         }
     }
 

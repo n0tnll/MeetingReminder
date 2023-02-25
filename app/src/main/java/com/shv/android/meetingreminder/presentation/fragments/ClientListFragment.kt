@@ -1,9 +1,6 @@
 package com.shv.android.meetingreminder.presentation.fragments
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +9,13 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
+import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.databinding.FragmentClientListBinding
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.presentation.MeetingReminderApplication
 import com.shv.android.meetingreminder.presentation.adapters.ClientAdapter
+import com.shv.android.meetingreminder.presentation.viewmodels.*
 import javax.inject.Inject
 
 class ClientListFragment : Fragment() {
@@ -37,20 +35,8 @@ class ClientListFragment : Fragment() {
         (requireActivity().application as MeetingReminderApplication).component
     }
 
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            with(binding) {
-                if (intent?.action == NOT_CONNECTED) {
-                    Toast.makeText(context, "Нет интернет соединения", Toast.LENGTH_SHORT)
-                        .show()
-                    progressBar.isVisible = false
-                }
-            }
-        }
-    }
-
-    private val localBroadcastManager by lazy {
-        LocalBroadcastManager.getInstance(requireActivity().application)
+    private val adapter by lazy {
+        ClientAdapter()
     }
 
     override fun onAttach(context: Context) {
@@ -72,36 +58,42 @@ class ClientListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val adapter = ClientAdapter()
         binding.rvClientList.adapter = adapter
-
         adapter.onClientClickListener = object : ClientAdapter.OnClientClickListener {
             override fun onClientClick(client: Client) {
                 launchAddReminderFragment(client)
             }
         }
-
         binding.btnRetryLoad.setOnClickListener {
-            viewModel.retryLoadClients()
+            viewModel.loadClients()
         }
+        observeViewModel()
+    }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) {
+    private fun observeViewModel() {
+        viewModel.state.observe(viewLifecycleOwner) {
             with(binding) {
-                progressBar.isVisible = it
-                btnRetryLoad.visibility = if (it) View.VISIBLE else View.GONE
+                progressBar.isVisible = false
+                btnRetryLoad.visibility = View.GONE
+                when (it) {
+                    is Loading -> {
+                        progressBar.isVisible = true
+                    }
+                    is ClientsList -> {
+                        adapter.submitList(it.clientsList)
+                    }
+                    is LoadingError -> {
+                        progressBar.isVisible = false
+                        btnRetryLoad.visibility = View.VISIBLE
+                        Toast.makeText(
+                            context,
+                            getString(R.string.load_clients_error_toast),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
-
-        viewModel.clientsList.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
-
-        val intentFilter = IntentFilter().apply {
-            addAction(NOT_CONNECTED)
-        }
-        localBroadcastManager.registerReceiver(receiver, intentFilter)
-
     }
 
     private fun launchAddReminderFragment(client: Client) {
@@ -113,11 +105,5 @@ class ClientListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        localBroadcastManager.unregisterReceiver(receiver)
-    }
-
-    companion object {
-
-        private const val NOT_CONNECTED = "not_connected"
     }
 }
