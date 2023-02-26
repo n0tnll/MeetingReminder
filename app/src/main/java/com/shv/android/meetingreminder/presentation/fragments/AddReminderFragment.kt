@@ -90,13 +90,10 @@ class AddReminderFragment : Fragment() {
     private fun FragmentAddReminderBinding.selectReminderFields() {
         val title = etReminderTitle.text.toString()
         val selectedClient = viewModel.client.value
-        val date = etReminderDate.text.toString()
-        val time = etReminderTime.text.toString()
         viewModel.addReminder(
             title,
             selectedClient ?: throw RuntimeException("Client is null"),
-            date,
-            time
+            calendar.timeInMillis
         )
     }
 
@@ -192,17 +189,15 @@ class AddReminderFragment : Fragment() {
         }
     }
 
-    private fun getDateFromPickerToString(date: Calendar): String {
+    private fun getDateFromPickerToString(calendar: Calendar): String {
         val formatter = SimpleDateFormat(getString(R.string.date_pattern), Locale.getDefault())
-        return formatter.format(date.time)
+        return formatter.format(calendar.time)
     }
 
-    private fun getTimeFromPickerToString(time: Calendar): String {
-        val timeHour = time[Calendar.HOUR_OF_DAY]
-        val timeMinute = time[Calendar.MINUTE]
-        val hour = if (timeHour in 0..9) "0$timeHour" else timeHour
-        val minute = if (timeMinute in 0..9) "0$timeMinute" else timeMinute
-        return String.format(getString(R.string.time_pattern), hour, minute)
+    private fun getTimeFromPickerToString(calendar: Calendar): String {
+        val formatter =
+            SimpleDateFormat(getString(R.string.time_format_pattern), Locale.getDefault())
+        return formatter.format(calendar.time)
     }
 
     private fun closeAddReminderFragment() {

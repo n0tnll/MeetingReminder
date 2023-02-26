@@ -14,16 +14,14 @@ class ReminderMapper @Inject constructor() {
         id = dbModel.id,
         fullName = dbModel.client.fullName,
         title = dbModel.title,
-        date = dbModel.date,
-        time = dbModel.time,
+        dateTime = dbModel.dateTime,
         client = dbModel.client
     )
 
     fun mapEntityToDbModel(reminder: Reminder) = ReminderDbModel(
         id = reminder.id,
         title = reminder.title,
-        date = reminder.date,
-        time = reminder.time,
+        dateTime = reminder.dateTime,
         client = reminder.client
     )
 

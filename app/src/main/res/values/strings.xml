@@ -20,6 +20,7 @@
     <string name="incorrect_time">Неверное время</string>
     <string name="btn_retry_load">Повторить</string>
     <string name="time_pattern">%s:%s</string>
+    <string name="time_format_pattern">HH:mm</string>
     <string name="date_pattern">dd.MM.yyyy</string>
     <string name="client_load_error">Ошибка при загрузке</string>
     <string name="load_clients_error_toast">Ошибка загрузки</string>
