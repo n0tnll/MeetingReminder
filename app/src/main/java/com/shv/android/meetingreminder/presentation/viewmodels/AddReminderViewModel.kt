@@ -32,13 +32,7 @@ class AddReminderViewModel @Inject constructor(
     val client: LiveData<Client>
         get() = _client
 
-    fun addReminder(title: String, client: Client, dateTime: Long) {
-        val reminder = Reminder(
-            title = title,
-            fullName = client.fullName,
-            dateTime = dateTime,
-            client = client
-        )
+    fun addReminder(reminder: Reminder) {
         viewModelScope.launch {
             addReminderUseCase(reminder)
             finishWork()

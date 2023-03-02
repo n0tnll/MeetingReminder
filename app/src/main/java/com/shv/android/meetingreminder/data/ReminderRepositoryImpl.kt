@@ -1,10 +1,12 @@
 package com.shv.android.meetingreminder.data
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.data.database.ReminderDao
+import com.shv.android.meetingreminder.data.database.ReminderDbModel
 import com.shv.android.meetingreminder.data.mapper.ReminderMapper
 import com.shv.android.meetingreminder.data.network.api.ApiService
 import com.shv.android.meetingreminder.domain.ReminderRepository
@@ -13,7 +15,9 @@ import com.shv.android.meetingreminder.domain.entity.Reminder
 import com.shv.android.meetingreminder.domain.usecase.validation_usecase.ValidationResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -65,6 +69,23 @@ class ReminderRepositoryImpl @Inject constructor(
         return mapper.mapListDtoToListEntity(clients)
     }
 
+    override suspend fun getActiveAlarms(time: Long): List<Reminder> {
+        var list: List<ReminderDbModel>
+        coroutineScope {
+            list = withContext(IO) {
+                reminderDao.getActiveAlarms(time)
+            }
+        }
+        return mapper.mapListReminderDbModelToListEntity(list)
+    }
+
+    override suspend fun updateTaskStatus(reminder: Reminder) {
+        Log.d("OnCompletedBroadcastReceiver", "reminderId: ${reminder.id} was updated status ${reminder.status}")
+        CoroutineScope(IO).launch {
+            reminderDao.addReminder(mapper.mapEntityToDbModel(reminder))
+        }
+    }
+
     override fun validateTitle(title: String): ValidationResult {
         if (title.isBlank()) {
             return ValidationResult(
@@ -114,8 +135,11 @@ class ReminderRepositoryImpl @Inject constructor(
                 successful = true
             )
         }
-        val timeNow = LocalTime.now()
-        val meetingTime = LocalTime.of(time[Calendar.HOUR_OF_DAY], time[Calendar.MINUTE])
+        val now = Calendar.getInstance().apply {
+            add(Calendar.HOUR_OF_DAY, 1)
+        }
+        val timeNow = LocalTime.of(now[Calendar.HOUR_OF_DAY], now[Calendar.MINUTE], 0)
+        val meetingTime = LocalTime.of(time[Calendar.HOUR_OF_DAY], time[Calendar.MINUTE], 0)
         if (today) {
             if (meetingTime <= timeNow)
                 return ValidationResult(

@@ -5,15 +5,16 @@ import com.shv.android.meetingreminder.data.network.model.ClientDto
 import com.shv.android.meetingreminder.data.network.model.ClientsListDto
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
-import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 class ReminderMapper @Inject constructor() {
 
     fun mapDbModelToEntity(dbModel: ReminderDbModel) = Reminder(
         id = dbModel.id,
-        fullName = dbModel.client.fullName,
+        fullName = dbModel.client.clientFullName,
         title = dbModel.title,
+        status = dbModel.status,
         dateTime = dbModel.dateTime,
         client = dbModel.client
     )
@@ -21,14 +22,15 @@ class ReminderMapper @Inject constructor() {
     fun mapEntityToDbModel(reminder: Reminder) = ReminderDbModel(
         id = reminder.id,
         title = reminder.title,
+        status = reminder.status,
         dateTime = reminder.dateTime,
         client = reminder.client
     )
 
     private fun mapClientDtoToEntity(clientDto: ClientDto): Client {
         return Client(
-            clientId = UUID.randomUUID().toString(),
-            fullName = mapFullName(
+            clientId = atomicInteger.addAndGet(1),
+            clientFullName = mapFullName(
                 clientDto.clientNameDto.title,
                 clientDto.clientNameDto.first,
                 clientDto.clientNameDto.last
@@ -44,5 +46,16 @@ class ReminderMapper @Inject constructor() {
 
     fun mapListDtoToListEntity(listDto: ClientsListDto) = listDto.clients.map {
         mapClientDtoToEntity(it)
+    }
+
+    fun mapListReminderDbModelToListEntity(listDbModel: List<ReminderDbModel>): List<Reminder> {
+        val list = listDbModel.map {
+            mapDbModelToEntity(it)
+        }
+        return list
+    }
+
+    companion object {
+        private val atomicInteger = AtomicInteger(0)
     }
 }

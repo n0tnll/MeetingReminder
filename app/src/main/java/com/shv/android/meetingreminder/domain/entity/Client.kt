@@ -5,8 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Client(
-    val clientId: String,
-    val fullName: String,
+    val clientId: Int,
+    val clientFullName: String,
     val email: String,
     val imgUrl: String
 ) : Parcelable

@@ -26,7 +26,7 @@ class ClientAdapter :
         with(holder.binding) {
             with(client) {
                 Picasso.get().load(imgUrl).into(ivClientPhoto)
-                tvClientName.text = fullName
+                tvClientName.text = clientFullName
                 tvClientEmail.text = email
             }
             root.setOnClickListener {
