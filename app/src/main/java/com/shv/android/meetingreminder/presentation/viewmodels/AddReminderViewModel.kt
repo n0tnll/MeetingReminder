@@ -65,25 +65,20 @@ class AddReminderViewModel @Inject constructor(
         val titleResult = validateTitleUseCase(_state.value?.title ?: "")
         val clientResult = validateClientUseCase(_state.value?.client ?: "")
         val dateResult = validateDateUseCase(_state.value!!.date)
-        val timeResult =
-            if (_state.value?.time == null)
-                ValidationResult(successful = true)
-            else validateTimeUseCase(
-                _state.value?.time
-            )
+        val timeResult = validateTimeUseCase(_state.value!!.time)
 
         val hasError = listOf(
             titleResult,
             clientResult,
             dateResult,
             timeResult
-        ).any { !it!!.successful }
+        ).any { !it.successful }
 
         _state.value = _state.value?.copy(
             titleError = titleResult.errorMessage,
             clientError = clientResult.errorMessage,
             dateError = dateResult.errorMessage,
-            timeError = timeResult?.errorMessage,
+            timeError = timeResult.errorMessage,
             formValid = false
         )
         if (hasError) return

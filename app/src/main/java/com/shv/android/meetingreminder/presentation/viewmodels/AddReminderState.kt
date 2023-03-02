@@ -9,7 +9,7 @@ data class AddReminderState(
     val clientError: String? = null,
     val date: Calendar = Calendar.getInstance(),
     val dateError: String? = null,
-    val time: Calendar? = null,
+    val time: Calendar = Calendar.getInstance(),
     val timeError: String? = null,
     val formValid: Boolean = false,
     val isFinished: Boolean = false

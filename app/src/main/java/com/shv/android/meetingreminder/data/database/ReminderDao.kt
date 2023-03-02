@@ -9,7 +9,8 @@ interface ReminderDao {
     @Query(
         "SELECT * " +
                 "FROM reminders " +
-                "ORDER BY dateTime"
+                "ORDER BY status " +
+                "AND dateTime"
     )
     fun getReminderList(): LiveData<List<ReminderDbModel>>
 

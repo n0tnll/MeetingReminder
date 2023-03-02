@@ -129,17 +129,13 @@ class ReminderRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun validateTime(time: Calendar?): ValidationResult {
-        if (time == null) {
-            return ValidationResult(
-                successful = true
-            )
-        }
+    override fun validateTime(time: Calendar): ValidationResult {
         val now = Calendar.getInstance().apply {
             add(Calendar.HOUR_OF_DAY, 1)
         }
         val timeNow = LocalTime.of(now[Calendar.HOUR_OF_DAY], now[Calendar.MINUTE], 0)
         val meetingTime = LocalTime.of(time[Calendar.HOUR_OF_DAY], time[Calendar.MINUTE], 0)
+        Log.d("validateTime", "timeNow: $timeNow\nmeetingTime: $meetingTime")
         if (today) {
             if (meetingTime <= timeNow)
                 return ValidationResult(

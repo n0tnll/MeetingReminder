@@ -28,7 +28,7 @@ interface ReminderRepository {
 
     fun validateDate(date: Calendar): ValidationResult
 
-    fun validateTime(time: Calendar?): ValidationResult
+    fun validateTime(time: Calendar): ValidationResult
 
     suspend fun getActiveAlarms(time: Long): List<Reminder>
     suspend fun updateTaskStatus(reminder: Reminder)

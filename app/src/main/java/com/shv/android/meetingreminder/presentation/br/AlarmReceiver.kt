@@ -77,7 +77,6 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        private var NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "channel_id"
         private const val CHANNEL_NAME = "Meeting reminder"
 

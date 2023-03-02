@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,8 +24,8 @@ import com.shv.android.meetingreminder.databinding.FragmentAddReminderBinding
 import com.shv.android.meetingreminder.domain.entity.Client
 import com.shv.android.meetingreminder.domain.entity.Reminder
 import com.shv.android.meetingreminder.presentation.AddReminderFormEvent
-import com.shv.android.meetingreminder.presentation.br.AlarmReceiver
 import com.shv.android.meetingreminder.presentation.MeetingReminderApplication
+import com.shv.android.meetingreminder.presentation.br.AlarmReceiver
 import com.shv.android.meetingreminder.presentation.viewmodels.AddReminderState
 import com.shv.android.meetingreminder.presentation.viewmodels.AddReminderViewModel
 import com.shv.android.meetingreminder.presentation.viewmodels.ViewModelFactory
@@ -68,7 +67,6 @@ class AddReminderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("AddReminderFragment", "onCreateView")
         _binding = FragmentAddReminderBinding.inflate(
             inflater,
             container,
@@ -90,6 +88,7 @@ class AddReminderFragment : Fragment() {
                 selectClient()
             }
             etReminderDate.setText(getDateFromPickerToString(calendar))
+            etReminderTime.setText(getTimeFromPickerToString(calendar))
             btnSaveReminder.setOnClickListener {
                 selectReminderFields()
             }
@@ -104,8 +103,6 @@ class AddReminderFragment : Fragment() {
 
     private fun FragmentAddReminderBinding.selectReminderFields() {
         val title = etReminderTitle.text.toString()
-        val selectedClient = viewModel.client.value
-        val timeFieldIsEmpty = etReminderTime.text.toString().isBlank()
         val reminder = Reminder(
             title = title,
             fullName = client.clientFullName,
@@ -114,14 +111,10 @@ class AddReminderFragment : Fragment() {
             client = client
         )
         viewModel.addReminder(reminder)
-        Log.d("btnSaveReminder", "from btnSaveReminder -> reminderId: ${reminder.id}")
-        Log.d("btnSaveReminder", "from btnSaveReminder -> reminderTitle: ${reminder.title}")
-        Log.d("btnSaveReminder", "from btnSaveReminder -> reminderClient: ${reminder.client.clientFullName}")
-        Log.d("btnSaveReminder", "from btnSaveReminder -> reminderDateTime: ${reminder.dateTime}")
-        setReminderAlarm(reminder, timeFieldIsEmpty)
+        setReminderAlarm(reminder)
     }
 
-    private fun setReminderAlarm(reminder: Reminder, timeFieldIsEmpty: Boolean) {
+    private fun setReminderAlarm(reminder: Reminder) {
         val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
         val meetingTime = Calendar.getInstance().apply {
             timeInMillis = reminder.dateTime
@@ -144,7 +137,6 @@ class AddReminderFragment : Fragment() {
             )
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, meetingTime.timeInMillis, pendingIntent)
-
         Toast.makeText(context, "Notification set", Toast.LENGTH_SHORT).show()
     }
 
@@ -271,7 +263,5 @@ class AddReminderFragment : Fragment() {
         private const val TIME_PICKER_TAG = "time"
         private const val DATE_PICKER_TAG = "date"
         const val RESULT_FROM_CLIENT_LIST = "chosen_client"
-        const val CLIENT_NAME = "client_name"
-        const val REMINDER_TITLE = "reminder_title"
     }
 }

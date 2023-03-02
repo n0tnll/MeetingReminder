@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class ValidateTimeUseCase @Inject constructor(private val repository: ReminderRepository) {
 
-    operator fun invoke(calendar: Calendar?) : ValidationResult? {
-        return calendar?.let { repository.validateTime(it) }
+    operator fun invoke(calendar: Calendar) : ValidationResult {
+        return repository.validateTime(calendar)
     }
 }
