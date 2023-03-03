@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.shv.android.meetingreminder.R
 import com.shv.android.meetingreminder.databinding.FragmentReminderListBinding
+import com.shv.android.meetingreminder.domain.entity.Reminder
 import com.shv.android.meetingreminder.presentation.br.AlarmReceiver
 import com.shv.android.meetingreminder.presentation.MeetingReminderApplication
 import com.shv.android.meetingreminder.presentation.adapters.ReminderAdapter
@@ -83,21 +84,24 @@ class ReminderListFragment : Fragment() {
         }
     }
 
-    private fun removeAlarm(clientId: Int) {
-        val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = AlarmReceiver.newIntent(requireContext())
-        val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(),
-            clientId,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-        alarmManager.cancel(pendingIntent)
-        Toast.makeText(
-            requireContext(),
-            "Notification for client with id: $clientId was canceled",
-            Toast.LENGTH_SHORT
-        ).show()
+    private fun removeAlarm(reminder: Reminder) {
+        if (!reminder.status) {
+            val alarmManager =
+                requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = AlarmReceiver.newIntent(requireContext())
+            val pendingIntent = PendingIntent.getBroadcast(
+                requireContext(),
+                reminder.id,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.cancel(pendingIntent)
+            Toast.makeText(
+                requireContext(),
+                "Notification for reminder: ${reminder.title} was canceled",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -123,7 +127,7 @@ class ReminderListFragment : Fragment() {
                 when (direction) {
                     ItemTouchHelper.RIGHT -> {
                         viewModel.deleteReminderItem(item)
-                        removeAlarm(item.client.clientId)
+                        removeAlarm(item)
                         Snackbar.make(
                             binding.rvReminderList,
                             "Был удалён ${item.title}",

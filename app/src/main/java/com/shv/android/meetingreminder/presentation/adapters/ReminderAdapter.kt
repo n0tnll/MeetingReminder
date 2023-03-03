@@ -1,47 +1,51 @@
 package com.shv.android.meetingreminder.presentation.adapters
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.shv.android.meetingreminder.databinding.ReminderItemBinding
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.shv.android.meetingreminder.domain.entity.Reminder
-import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ReminderAdapter :
-    ListAdapter<Reminder, ReminderViewHolder>(ReminderDiffCallback()) {
+    ListAdapter<Reminder, ViewHolder>(ReminderDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderViewHolder {
-        val binding = ReminderItemBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return ReminderViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ReminderViewHolder, position: Int) {
-        val reminder = getItem(position)
-        with(holder.binding) {
-            with(reminder) {
-                tvReminderTitle.text = title
-                tvReminderDate.text = getDateFromMillisToString(dateTime)
-                tvReminderTime.text = getTimeFromMillisToString(dateTime)
-                tvClientName.text = fullName
-                tvClientEmail.text = client.email
-                Picasso.get().load(client.imgUrl).into(ivClientPhoto)
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return if (viewType == ITEM_STATE_NOT_COMPLETED) {
+            ReminderViewHolder.from(parent)
+        } else {
+            ReminderCompletedViewHolder.from(parent)
         }
     }
 
-    private fun getDateFromMillisToString(date: Long): String {
-        val dateFormatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        return dateFormatter.format(date)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val reminder = getItem(position)
+        when (holder) {
+            is ReminderViewHolder -> holder.bind(reminder)
+            is ReminderCompletedViewHolder -> holder.bind(reminder)
+        }
     }
 
-    private fun getTimeFromMillisToString(time: Long): String {
-        val dateFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return dateFormatter.format(time)
+    override fun getItemViewType(position: Int): Int {
+        return if (getItem(position).status) {
+            ITEM_STATE_COMPLETED
+        } else {
+            ITEM_STATE_NOT_COMPLETED
+        }
+    }
+
+    companion object {
+        const val ITEM_STATE_COMPLETED = 100
+        const val ITEM_STATE_NOT_COMPLETED = 101
+
+        fun getDateFromMillisToString(date: Long): String {
+            val dateFormatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+            return dateFormatter.format(date)
+        }
+
+        fun getTimeFromMillisToString(time: Long): String {
+            val dateFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+            return dateFormatter.format(time)
+        }
     }
 }
